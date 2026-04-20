@@ -62,17 +62,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     AnimatedSnackBar.material(
                       state.message,
                       type: AnimatedSnackBarType.error,
+                      mobileSnackBarPosition: MobileSnackBarPosition.bottom
+                      
                     ).show(context);
                   } else if (state is AuthSuccess) {
                     AnimatedSnackBar.material(
                       'Account created successfully! Please login.',
                       type: AnimatedSnackBarType.success,
+                       mobileSnackBarPosition: MobileSnackBarPosition.bottom
                     ).show(context);
 
                     context.pushReplacementNamed(AppRoutes.loginScreen);
                   }
                 },
                 builder: (context, state) {
+                  if (state is AuthLoading) {
+                    return SizedBox(
+                      // بنديله ارتفاع الشاشة عشان اللودينج ييجي في النص بالظبط
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    );
+                  }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -130,6 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Text("Password", style: AppStyles.black16w500Style),
                       const HeightSpace(8),
                       CustomTextField(
+                        isPassword: true,
                         hintText: "Enter Your Password",
                         controller: password,
                         suffixIcon: Icon(
@@ -154,6 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const HeightSpace(8),
                       CustomTextField(
+                        isPassword: true,
                         hintText: "Enter Your Password",
                         controller: confirmPassword,
                         suffixIcon: Icon(

@@ -12,7 +12,6 @@ import 'package:orders/core/widgets/primay_button_widget.dart';
 import 'package:orders/core/widgets/spacing_widgets.dart';
 import 'package:orders/features/auth/presentation/manger/auth/auth_cubit.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -48,26 +47,39 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsets.symmetric(horizontal: 22.w),
             child: Form(
               key: formKey,
-           
               child: BlocConsumer<AuthCubit, AuthState>(
-               
                 listener: (context, state) {
                   if (state is AuthFailure) {
                     AnimatedSnackBar.material(
                       state.message,
                       type: AnimatedSnackBarType.error,
+                      mobileSnackBarPosition: MobileSnackBarPosition.bottom,
                     ).show(context);
                   } else if (state is AuthSuccess) {
                     AnimatedSnackBar.material(
                       'Login successfully',
                       type: AnimatedSnackBarType.success,
+                      mobileSnackBarPosition: MobileSnackBarPosition.bottom,
                     ).show(context);
 
-                  
                     context.pushReplacementNamed(AppRoutes.homeScreen);
                   }
                 },
                 builder: (context, state) {
+                  // 1. هنا لو بيحمل، هيخفي الفورم ويعرض اللودينج بس في النص وبحجمه الطبيعي
+                  if (state is AuthLoading) {
+                    return SizedBox(
+                      // بنديله ارتفاع الشاشة عشان اللودينج ييجي في النص بالظبط
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    );
+                  }
+
+                  // 2. لو مفيش تحميل (الحالة العادية)، هيعرض الفورم
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -112,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text("Password", style: AppStyles.black16w500Style),
                       const HeightSpace(8),
                       CustomTextField(
+                        isPassword: true,
                         hintText: "Enter Your Password",
                         controller: password,
                         suffixIcon: Icon(
@@ -131,28 +144,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const HeightSpace(55),
 
-                      
-                      state is AuthLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : PrimayButtonWidget(
-                              buttonText: "Sign in",
-                              onPress: () {
-                                if (formKey.currentState!.validate()) {
-                                 
-                                  context.read<AuthCubit>().login(
-                                    email: email.text.trim(),
-                                    password: password.text,
-                                  );
-                                }
-                              },
-                            ),
+                      // هنا رجعنا الزرار العادي لأن اللودينج خلاص بيتمسدل في أول الشاشة
+                      PrimayButtonWidget(
+                        buttonText: "Sign in",
+                        onPress: () {
+                          if (formKey.currentState!.validate()) {
+                            context.read<AuthCubit>().login(
+                              email: email.text.trim(),
+                              password: password.text,
+                            );
+                          }
+                        },
+                      ),
 
                       const HeightSpace(24),
 
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            context.pushReplacementNamed(AppRoutes.registerScreen);
+                            context.pushReplacementNamed(
+                              AppRoutes.registerScreen,
+                            );
                           },
                           child: RichText(
                             text: TextSpan(
