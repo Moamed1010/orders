@@ -4,7 +4,6 @@ class AppRoutes {
   static const String registerScreen = '/registerScreen';
 
   static const String homeScreen = '/homeScreen';
-
-  static const String productScreen = '/productScreen';
-  static const String addressScreen = '/addressScreen';
+  static const String addOrderScreen = '/addOrderScreen';
+  static const String placepickerScreen = '/placepickerScreen';
 }

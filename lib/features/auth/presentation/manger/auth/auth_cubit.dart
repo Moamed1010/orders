@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
 import 'package:orders/features/auth/domain/entities/user_entity.dart';
 import 'package:orders/features/auth/domain/usecases/logib_usecase.dart';

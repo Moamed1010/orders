@@ -9,15 +9,19 @@ class CustomTextField extends StatefulWidget {
   final bool? isPassword;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final Function()? onTap;
+  final bool? readonly;
 
   const CustomTextField({
     super.key,
     this.hintText,
     this.suffixIcon,
     this.width,
+    this.onTap,
     this.isPassword,
     this.controller,
     this.validator,
+    this.readonly,
   });
 
   @override
@@ -36,10 +40,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         validator: widget.validator,
         autofocus: false,
-        
+        readOnly: widget.readonly ?? false,
+        onTap: widget.onTap,
+
         // هنا بنقول: لو هو باسورد استخدم المتغير، لو مش باسورد خليه false دايماً (عشان يظهر عادي)
         obscureText: widget.isPassword == true ? _isObscured : false,
-        
+
         cursorColor: AppColors.primaryColor,
         decoration: InputDecoration(
           hintText: widget.hintText ?? "",
@@ -48,8 +54,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
             color: const Color(0xff8391A1),
             fontWeight: FontWeight.w500,
           ),
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 18.w,
+            vertical: 18.h,
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.r),
             borderSide: const BorderSide(color: Color(0xffE8ECF4), width: 1),
@@ -68,13 +76,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           filled: true,
           fillColor: const Color(0xffF7F8F9),
-          
+
           // هنا السحر: لو ده باسورد هنعمل أيقونة بتغير حالتها.. لو لأ، هنعرض الأيقونة العادية اللي إنت باعتها
           suffixIcon: widget.isPassword == true
               ? IconButton(
                   icon: Icon(
                     _isObscured ? Icons.visibility_off : Icons.visibility,
-                    color: const Color(0xff8391A1), // نفس لون الـ hint عشان يبقى متناسق
+                    color: const Color(
+                      0xff8391A1,
+                    ), // نفس لون الـ hint عشان يبقى متناسق
                     size: 20.sp,
                   ),
                   onPressed: () {
